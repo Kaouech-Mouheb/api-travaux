@@ -23,6 +23,12 @@ const estimationRouter = require('./routes/estimation');
 
 var app = express();
 
+const cors = require('cors');
+app.use(cors({
+  origin: 'https://app-travaux-4ddc429d1e0f.herokuapp.com',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+}));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
