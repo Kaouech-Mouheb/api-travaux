@@ -23,10 +23,10 @@ const estimationRouter = require('./routes/estimation');
 
 var app = express();
 
-const cors = require('cors');
+ const cors = require('cors');
 
 app.use(cors({
-  origin: 'https://app-travaux-4ddc429d1e0f.herokuapp.com',
+  origin: 'https://www.travaux-ile-de-france.fr',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
 }));
@@ -35,11 +35,12 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://app-travaux-4ddc429d1e0f.herokuapp.com');
+  res.setHeader('Access-Control-Allow-Origin', 'https://www.travaux-ile-de-france.fr');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   next();
 });
+
 
 app.use(logger('dev'));
 app.use(express.json({ limit: '50mb' }));
