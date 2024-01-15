@@ -58,48 +58,50 @@ exports.register = async (req, res, next) => {
 };
 
 
-exports.login = (req, res, next) => {
-    // validation de la requête
-    const userConnection = {
-        ...req.body
-    }
-    if (!userConnection) {
-        return res.status(400).json({
-            'error': 'Veuillez remplir toutes les champs'
-        })
-    }
-    //Vérification si l'user existe
-    db.User.findOne({
-        where: {
-            email: userConnection.email
+
+exports.login = async (req, res, next) => {
+    try {
+        // Validation de la requête
+        const userConnection = { ...req.body };
+        if (!userConnection) {
+            return res.status(400).json({
+                'error': 'Veuillez remplir toutes les champs'
+            });
         }
-    })
-        .then(user => {
-            if (!user) {
-                return res.status(401).json({
-                    'message': 'utilisateur n\'est pas trouvé, veuillez vous enregistrez'
-                })
+
+        // Vérification si l'utilisateur existe
+        const user = await db.User.findOne({
+            where: {
+                email: userConnection.email
             }
-            //comparer les mots de passe des utilisateur
-            bcrypt.compare(userConnection.password, user.password)
-                .then(valid => {
-                    if (!valid) {
-                        return res.status(403).json({
-                            'message': 'Mot de passe incorrect'
-                        })
-                    }
-                    res.status(200).json({
-                        'token': utilsJwt.generateToken(user)
-                    })
-                }).catch(error => res.status(500).json({
-                    'message': error,
-                }))
-        })
-        .catch(error => {
-            return res.status(500).json({
-                'error': error
-            })
-        })
+        });
+
+        if (!user) {
+            return res.status(401).json({
+                'message': 'Utilisateur non trouvé, veuillez vous enregistrer'
+            });
+        }
+
+        // Comparaison sécurisée des mots de passe
+        const valid = await bcrypt.compare(userConnection.password, user.password);
+
+        if (!valid) {
+            return res.status(403).json({
+                'message': 'Mot de passe incorrect'
+            });
+        }
+
+        // Génération du jeton JWT
+        const token = utilsJwt.generateToken(user);
+
+        res.status(200).json({
+            'token': token
+        });
+    } catch (error) {
+        return res.status(500).json({
+            'error': error.message || 'Une erreur est survenue lors de la connexion.'
+        });
+    }
 };
 
 exports.updateNewPassword = async (req, res, next) => {
@@ -151,7 +153,7 @@ exports.updateNewPassword = async (req, res, next) => {
         });
     }
 };
-exports.changePassword = async (req, res, next) => {
+exports.changePassword = async(req, res, next) =>{
     try {
         const id = utilsJwt.getUserId(req.headers.authorization);
         if (Number.isNaN(id)) return res.status(400).end();
