@@ -2,9 +2,9 @@ const db = require('../models');
 const Sequelize = require('sequelize');
 const utilsJwt = require('../utils/jwt');
 // LOGIQUE METIER //
-exports.createAnnance = (req, res, next) => {
 
 
+exports.createAnnance = async (req, res, next) => {
   const annonce = {
     ...req.body
   };

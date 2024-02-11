@@ -43,6 +43,7 @@ exports.register = async (req, res, next) => {
             commence: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }),
             UserId: createdUser.id,
         };
+        
 
         // Ajout des informations du plan à la table Plan
         await db.Plan.create(planInfo);

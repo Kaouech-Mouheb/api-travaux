@@ -5,10 +5,12 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 
+const webPush = require('web-push');
+const bodyParser = require('body-parser');
+
 var db = require('./models');
 
 var indexRouter = require('./routes/index');
-
 
 var usersRouter = require('./routes/users');
 const plansRouter = require('./routes/plans');
@@ -18,15 +20,12 @@ const mesannancesRouter = require('./routes/mesannances');
 const estimationRouter = require('./routes/estimation');
 
 
-
-
-
 var app = express();
 
  const cors = require('cors');
 
 app.use(cors({
-  origin: 'https://www.travaux-ile-de-france.fr',
+  origin: 'https://www.travaux-ile-de-france.fr || https://auditsrenovation.fr/',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
 }));
@@ -35,11 +34,12 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://www.travaux-ile-de-france.fr');
+  res.setHeader('Access-Control-Allow-Origin', 'https://www.travaux-ile-de-france.fr ');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   next();
 });
+
 
 
 app.use(logger('dev'));
@@ -55,11 +55,6 @@ app.use('/api/annance', annanceRouter);
 app.use('/api/publication', publicationRouter);
 app.use('/api/mesannances', mesannancesRouter);
 app.use('/api/estimation', estimationRouter);
-
-
-
-
-
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
